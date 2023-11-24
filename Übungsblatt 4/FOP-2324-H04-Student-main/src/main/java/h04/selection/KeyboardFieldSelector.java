@@ -5,20 +5,36 @@ import fopbot.*;
 
 import java.awt.*;
 
+/**
+ * Is a class with which one can select a field using keyboard inputs.
+ */
 public class KeyboardFieldSelector implements FieldSelector, KeyPressListener {
 
     private FieldSelectionListener fieldSelectionListener;
     private boolean firstTimeUsed = true;
     private Field markedField;
 
+    /**
+     * Constructs a new KeyboardFieldSelector and
+     * adds the Field selector to the global KeyPressListener
+     */
     public KeyboardFieldSelector() {
         World.addKeyPressListener(this);
     }
 
+    /**
+     * Assigns a FieldSelectionListener to the FieldSelector
+     * @param fieldSelectionListener the FieldSelectionListener that will be assigned
+     */
     public void setFieldSelectionListener(FieldSelectionListener fieldSelectionListener) {
         this.fieldSelectionListener = fieldSelectionListener;
     }
 
+    /**
+     * Moves the field around the world with arrow keys.
+     * Pressing Space selects the field.
+     * @param event the key press event
+     */
     public void onKeyPress(KeyPressEvent event) {
 
         Key key = event.getKey();
@@ -26,6 +42,7 @@ public class KeyboardFieldSelector implements FieldSelector, KeyPressListener {
 
         if(this.firstTimeUsed == true){
             this.markedField = world.getField(0,0);
+            this.markedField.setFieldColor(Color.RED);
             this.firstTimeUsed = false;
         }
 
@@ -68,7 +85,6 @@ public class KeyboardFieldSelector implements FieldSelector, KeyPressListener {
                 fieldSelectionListener.onFieldSelection(this.markedField);
             }
         }
-
 
     }
 }

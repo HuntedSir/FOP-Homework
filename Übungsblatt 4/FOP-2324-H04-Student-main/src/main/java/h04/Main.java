@@ -31,6 +31,9 @@ public class Main {
         main02();
     }
 
+    /**
+     * Test method for MouseFieldSelector
+     */
     public static void main01() {
         MouseFieldSelector mouseFieldSelector = new MouseFieldSelector();
         MoveByWalk moveByWalk = new MoveByWalk();
@@ -44,6 +47,9 @@ public class Main {
         robotMover.addRobot(robot3);
     }
 
+    /**
+     * Test method for KeyboardFieldSelector
+     */
     public static void main02() {
         KeyboardFieldSelector keyboardFieldSelector = new KeyboardFieldSelector();
         MoveByTeleport moveByTeleport = new MoveByTeleport();
