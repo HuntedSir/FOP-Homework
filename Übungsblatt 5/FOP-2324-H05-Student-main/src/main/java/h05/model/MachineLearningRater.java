@@ -1,13 +1,25 @@
 package h05.model;
 
+/**
+ * The Machine learning rater, which rates the computer based on its ability in machine learning.
+ */
 public class MachineLearningRater implements ComponentRater{
     private int numberOfTPUs = 0;
     private int memoryCapacity = 0;
 
+    /**
+     * Instantiates a new Machine learning rater.
+     */
     public MachineLearningRater(){
 
     }
 
+    /**
+     * Check model rates the computer based on the attributes of the parts in the computer.
+     *
+     * @param modelSize the model size
+     * @return the double
+     */
     public double checkModel(int modelSize){
         double score = 0;
 

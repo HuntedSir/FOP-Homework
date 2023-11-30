@@ -1,16 +1,35 @@
 package h05.model;
 
+/**
+ * The Mainboard, a component of the computer, which has certain slots that fits other components into them.
+ */
 public class MainboardImpl extends PurchasedComponent implements Mainboard{
     private final Socket socket;
     private CPU cpu;
     private Memory[] memories;
     private Peripheral[] peripherals;
+
+    /**
+     * Instantiates a new Mainboard with given attributes.
+     *
+     * @param socket                  the socket
+     * @param numberOfMemorySlots     the number of memory slots
+     * @param numberOfPeripheralSlots the number of peripheral slots
+     * @param price                   the price
+     */
     public MainboardImpl(Socket socket, int numberOfMemorySlots, int numberOfPeripheralSlots, double price){
         super(price);
         this.socket = socket;
         this.memories = new Memory[numberOfMemorySlots];
         this.peripherals = new Peripheral[numberOfPeripheralSlots];
     }
+
+    /**
+     * Adds a cpu to the motherboard if the socket is free.
+     *
+     * @param cpu the cpu
+     * @return Returns whether the cpu could be added or not.
+     */
     public boolean addCPU(CPU cpu){
         boolean cpuInsterted = false;
 
@@ -21,6 +40,13 @@ public class MainboardImpl extends PurchasedComponent implements Mainboard{
 
         return cpuInsterted;
     }
+
+    /**
+     * Adds memory to the motherboard if there is a free slot.
+     *
+     * @param memory the memory
+     * @return Returns whether a memory was added or not as a boolean.
+     */
     public boolean addMemory(Memory memory){
         boolean memoryInserted = false;
 
@@ -34,6 +60,13 @@ public class MainboardImpl extends PurchasedComponent implements Mainboard{
 
         return memoryInserted;
     }
+
+    /**
+     * Adds a peripheral to the motherboard if there is a free slot.
+     *
+     * @param peripheral the peripheral
+     * @return Returns whether a peripheral was added or not.
+     */
     public boolean addPeripheral(Peripheral peripheral){
         boolean peripheralInserted = false;
 
@@ -54,14 +87,18 @@ public class MainboardImpl extends PurchasedComponent implements Mainboard{
         if(this.cpu!=null){
             componentRater.consumeCPU(this.cpu);
         }
-        for (int i = 0; i < this.memories.length; i++) {
-            if(this.memories[i]!=null){
-                componentRater.consumeMemory(this.memories[i]);
+        if (this.memories != null) {
+            for (int i = 0; i < this.memories.length; i++) {
+                if (this.memories[i] != null) {
+                    componentRater.consumeMemory(this.memories[i]);
+                }
             }
         }
-        for (int i = 0; i < this.peripherals.length; i++) {
-            if(this.peripherals[i]!=null){
-                componentRater.consumePeripheral(this.peripherals[i]);
+        if(this.peripherals!=null) {
+            for (int i = 0; i < this.peripherals.length; i++) {
+                if (this.peripherals[i] != null) {
+                    componentRater.consumePeripheral(this.peripherals[i]);
+                }
             }
         }
     }

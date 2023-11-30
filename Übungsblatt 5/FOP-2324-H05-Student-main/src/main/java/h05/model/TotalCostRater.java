@@ -1,10 +1,23 @@
 package h05.model;
 
+/**
+ * The type Total cost rater, which rates the total cost of a motherboard.
+ */
 public class TotalCostRater implements ComponentRater{
     private double cost;
+
+    /**
+     * Instantiates a new Total cost rater.
+     */
     public TotalCostRater(){
 
     }
+
+    /**
+     * Get total price double that was calculates using this classes consume methods.
+     *
+     * @return the double
+     */
     public double getTotalPrice(){
         return this.cost;
     }
