@@ -34,4 +34,6 @@ public class ServerCenter implements Configuration{
             this.mainboards.get(i).rateBy(componentRater);
         }
     }
+
+
 }

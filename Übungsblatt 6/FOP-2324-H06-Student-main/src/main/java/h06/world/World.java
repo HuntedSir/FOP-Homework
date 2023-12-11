@@ -130,6 +130,37 @@ public class World {
      */
     @StudentImplementationRequired
     public boolean isBlocked(Point p, DirectionVector d) {
-        return crash(); // TODO: H2 - remove if implemented
+
+        Point fieldInDirection = d.getMovement(p);
+
+        if(isOutside(fieldInDirection.x, fieldInDirection.y)){
+            return true;
+        }
+        else {
+            boolean isHorizontal = false;
+
+            if (d == DirectionVector.UP) {
+                if(isBlocked(p.x,p.y, true)){
+                    return true;
+                }
+            }
+            if (d == DirectionVector.DOWN) {
+                if(isBlocked(fieldInDirection.x,fieldInDirection.y, true)){
+                    return true;
+                }
+            }
+            if (d == DirectionVector.RIGHT) {
+                if(isBlocked(p.x,p.y, false)){
+                    return true;
+                }
+            }
+            if (d == DirectionVector.LEFT) {
+                if(isBlocked(fieldInDirection.x,fieldInDirection.y, false)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

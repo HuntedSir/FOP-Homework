@@ -17,6 +17,7 @@ import static org.tudalgo.algoutils.student.Student.crash;
  */
 public class MazeSolverRecursive implements MazeSolver {
 
+
     /**
      * Constructs a recursive maze solver.
      */
@@ -27,19 +28,29 @@ public class MazeSolverRecursive implements MazeSolver {
     @StudentImplementationRequired
     @Override
     public DirectionVector nextStep(World world, Point p, DirectionVector d) {
-        return crash(); // TODO: H3.1 - remove if implemented
+        return (world.isBlocked(p,d.rotate270())) ?
+            nextStep(world, p, d.rotate90()) : d.rotate270();
     }
 
     @StudentImplementationRequired
     @Override
     public int numberOfSteps(World world, Point s, Point e, DirectionVector d) {
-        return crash(); // TODO: H3.2 - remove if implemented
+        if(s.x == e.x && s.y==e.y){
+            return 1;
+        }
+        else {
+            DirectionVector nextStep = nextStep(world, s, d);
+            return numberOfSteps(world, nextStep.getMovement(s), e, nextStep) + 1;
+        }
     }
 
     @StudentImplementationRequired
     @Override
     public Point[] solve(World world, Point s, Point e, DirectionVector d) {
-        return crash(); // TODO: H3.3 - remove if implemented
+        int numberOfSteps = this.numberOfSteps(world, s, e, d);
+        Point[] steps = new Point[numberOfSteps];
+        this.solveHelper(world, s, e, d, steps, 0);
+        return steps;
     }
 
     /**
@@ -54,6 +65,10 @@ public class MazeSolverRecursive implements MazeSolver {
      */
     @StudentImplementationRequired
     private void solveHelper(World world, Point p, Point e, DirectionVector d, Point[] path, int index) {
-        crash(); // TODO: H3.3 - remove if implemented
+        if(index<path.length){
+            path[index] = p;
+            DirectionVector nextStep = this.nextStep(world,p,d);
+            solveHelper(world, nextStep.getMovement(p), e, nextStep, path, index+1);
+        }
     }
 }

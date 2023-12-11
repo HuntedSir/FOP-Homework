@@ -28,18 +28,50 @@ public class MazeSolverIterative implements MazeSolver {
     @StudentImplementationRequired
     @Override
     public DirectionVector nextStep(World world, Point p, DirectionVector d) {
-        return crash(); // TODO: H4.1 - remove if implemented
+        if(world.isBlocked(p, d.rotate270())){
+            if(world.isBlocked(p, d)){
+                if(world.isBlocked(p, d.rotate90())){
+                    return d.rotate90().rotate90();
+                }
+                else{
+                    return d.rotate90();
+                }
+            }
+            else{
+                return d;
+            }
+        }
+        else {
+            return d.rotate270();
+        }
     }
 
     @StudentImplementationRequired
     @Override
     public int numberOfSteps(World world, Point s, Point e, DirectionVector d) {
-        return crash(); // TODO: H4.2 - remove if implemented
+        int numberOfSteps = 1;
+        while(!(s.x == e.x && s.y == e.y)){
+            numberOfSteps++;
+            DirectionVector nextStep = nextStep(world, s, d);
+            d=nextStep;
+            s=nextStep.getMovement(s);
+        }
+        return numberOfSteps;
     }
 
     @StudentImplementationRequired
     @Override
     public Point[] solve(World world, Point s, Point e, DirectionVector d) {
-        return crash(); // TODO: H4.3 - remove if implemented
+        int numberOfSteps = numberOfSteps(world, s, e, d);
+        Point[] steps = new Point[numberOfSteps];
+
+        for (int i = 0; i < steps.length; i++) {
+            DirectionVector nextStep = nextStep(world, s, d);
+            steps[i]=s;
+            d=nextStep;
+            s=nextStep.getMovement(s);
+        }
+
+        return steps;
     }
 }
