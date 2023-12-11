@@ -1,5 +1,8 @@
 package h07;
 
+import h07.expression.MapExpression;
+import h07.expression.impl.ToUpperFormatter;
+
 import java.util.Random;
 
 
@@ -15,56 +18,61 @@ public class Main {
 
 
 
-//    /**
-//     * Returns the normal map expression, more formally using the constructor to create a new instance of the class.
-//     *
-//     * @return the normal map expression using the constructor to create a new instance of the class
-//     */
-//    public static MapExpression testNormal(){
-//        // TODO H2.2
-//    }
+    /**
+     * Returns the normal map expression, more formally using the constructor to create a new instance of the class.
+     *
+     * @return the normal map expression using the constructor to create a new instance of the class
+     */
+    public static MapExpression testNormal(){
+        return new ToUpperFormatter();
+    }
 
 
-//    /**
-//     * Returns the map expression, more formally using an anonymous class to create a new instance of the class.
-//     *
-//     * @return the map expression using an anonymous class to create a new instance of the class
-//     */
-//    public static MapExpression testAnonymous(){
-//        // TODO H2.2
-//    }
+    /**
+     * Returns the map expression, more formally using an anonymous class to create a new instance of the class.
+     *
+     * @return the map expression using an anonymous class to create a new instance of the class
+     */
+    public static MapExpression testAnonymous(){
+        return new MapExpression() {
+            @Override
+            public String map(String string) {
+                return string.toUpperCase();
+            }
+        };
+    }
 
 
-//    /**
-//     * Returns the lambda expression, more formally using the lambda expression to create a new instance of the class.
-//     *
-//     * @return the lambda expression using the lambda expression to create a new instance of the class
-//     */
-//    public static MapExpression testLambda(){
-//        // TODO H2.2
-//    }
+    /**
+     * Returns the lambda expression, more formally using the lambda expression to create a new instance of the class.
+     *
+     * @return the lambda expression using the lambda expression to create a new instance of the class
+     */
+    public static MapExpression testLambda(){
+        return string -> string.toUpperCase();
+    }
 
 
-//    /**
-//     * Returns the method reference, more formally using the method reference to create a new instance of the class.
-//     *
-//     * @return the method reference using the method reference to create a new instance of the class
-//     */
-//    public static MapExpression testMethodReference(){
-//        // TODO H2.2
-//    }
+    /**
+     * Returns the method reference, more formally using the method reference to create a new instance of the class.
+     *
+     * @return the method reference using the method reference to create a new instance of the class
+     */
+    public static MapExpression testMethodReference(){
+        return String::toUpperCase;
+    }
 
 
     /**
      * Tests the different implementations of the MapExpression interface.
      */
     private static void test_h22(){
-//        System.out.println("H2.2: ");
-//        System.out.println(testNormal().map(TEST_STRING));
-//        System.out.println(testAnonymous().map(TEST_STRING));
-//        System.out.println(testLambda().map(TEST_STRING));
-//        System.out.println(testMethodReference().map(TEST_STRING));
-//        System.out.println();
+       System.out.println("H2.2: ");
+        System.out.println(testNormal().map(TEST_STRING));
+        System.out.println(testAnonymous().map(TEST_STRING));
+        System.out.println(testLambda().map(TEST_STRING));
+        System.out.println(testMethodReference().map(TEST_STRING));
+        System.out.println();
     }
 
     /**
