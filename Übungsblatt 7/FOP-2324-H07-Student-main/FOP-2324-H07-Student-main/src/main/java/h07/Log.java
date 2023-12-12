@@ -1,5 +1,6 @@
 package h07;
 
+import h07.expression.MapExpression;
 import h07.tree.*;
 
 /**
@@ -56,15 +57,20 @@ public abstract class Log {
 
 
 
-//    /**
-//     * Creates a mapping expression which will map a value to the given ANSI color.
-//     *
-//     * @param ansiColor the ANSI color to map to
-//     * @return a mapping expression which will map a value to the given ANSI color
-//     */
-//    public static MapExpression createColorExpression(String ansiColor){
-//        // TODO 4.1
-//    }
+    /**
+     * Creates a mapping expression which will map a value to the given ANSI color.
+     *
+     * @param ansiColor the ANSI color to map to
+     * @return a mapping expression which will map a value to the given ANSI color
+     */
+    public static MapExpression createColorExpression(String ansiColor){
+        return new MapExpression() {
+            @Override
+            public String map(String string) {
+                return ANSI_ESCAPE + ansiColor + ANSI_RESET;
+            }
+        };
+    }
 
 
     /**
@@ -83,8 +89,9 @@ public abstract class Log {
      * @return the formatted message
      */
     private String format(int level, String message){
-        // TODO H4.2
-        throw new RuntimeException("TODO H4.2");
+        this.level = level;
+        this.message = message;
+        return rootNode.evaluate();
     }
 
     /**
