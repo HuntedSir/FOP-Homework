@@ -42,7 +42,7 @@ public class NormalLog extends Log{
         ConditionNode informationPriority = new ConditionNode(level, blue, warningPriority);
         informationPriority.setConditionExpression(String -> (String=="0"||String=="1"));
 
-        replaceNewline.setMapExpression(createColorExpression(warningPriority.evaluate() + this.message));
+        replaceNewline.setMapExpression(createColorExpression(informationPriority.evaluate() + this.message));
         message.setValueExpression(() -> replaceNewline.evaluate());
 
         ConcatenationNode concatenationNode1 = new ConcatenationNode(separator, informationPriority);

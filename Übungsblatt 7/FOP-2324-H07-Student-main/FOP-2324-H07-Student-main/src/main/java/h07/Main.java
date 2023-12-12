@@ -67,7 +67,7 @@ public class Main {
      * Tests the different implementations of the MapExpression interface.
      */
     private static void test_h22(){
-       System.out.println("H2.2: ");
+        System.out.println("H2.2: ");
         System.out.println(testNormal().map(TEST_STRING));
         System.out.println(testAnonymous().map(TEST_STRING));
         System.out.println(testLambda().map(TEST_STRING));
