@@ -57,7 +57,20 @@ public class PowerPlant {
      * @param t the time variable
      */
     public void check(double t){
-        // TODO H5
+        Log log = new NormalLog();
+        for (int i = 0; i < this.reactors.length; i++) {
+            double power = this.reactors[i].getPower(t);
+            String kennung = this.reactors[i].toString();
+            log.log(0, kennung + ": Power = " + power);
+
+            if(power > 0.75){
+                log.log(6,  kennung + ": Overpowered!");
+            }
+
+            if(this.reactors[i].needMaintenance(t)){
+                log.log(3, kennung + ": Needs maintenance!");
+            }
+        }
     }
 
 }

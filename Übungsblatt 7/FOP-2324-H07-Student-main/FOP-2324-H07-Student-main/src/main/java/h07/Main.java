@@ -83,19 +83,19 @@ public class Main {
      *                              cleared when this exception is thrown.
      */
     private static void test_h4() throws InterruptedException {
-//        System.out.println("H4:");
-//        Log log = new NormalLog(); //new MaintenanceLog();
-//        log.log(1, "Hallo FoPler!");
-//        log.log(6, "Error: Code 6 received!");
-//        log.log(3, "Warnung: Diese Uebung ist hiermit beendet\nOver and out!");
-//
-//
-//        PowerPlant powerPlant = new PowerPlant(log, new Random(42), 10);
-//
-//        for(int i = 0; i < 10; i++){
-//            powerPlant.check(i / 100.0);
-//            Thread.sleep(1500);
-//        }
+        System.out.println("H4:");
+        Log log = new NormalLog(); //new MaintenanceLog();
+        log.log(1, "Hallo FoPler!");
+        log.log(6, "Error: Code 6 received!");
+        log.log(3, "Warnung: Diese Uebung ist hiermit beendet\nOver and out!");
+
+
+        PowerPlant powerPlant = new PowerPlant(log, new Random(42), 10);
+
+        for(int i = 0; i < 10; i++){
+            powerPlant.check(i / 100.0);
+            Thread.sleep(1500);
+        }
     }
 
 
@@ -107,14 +107,14 @@ public class Main {
      *                              cleared when this exception is thrown.
      */
     private static void test_h5() throws InterruptedException {
-//        System.out.println("H5:");
-//        Log log = new NormalLog(); //new MaintenanceLog();
-//        PowerPlant powerPlant = new PowerPlant(log, new Random(42), 10);
-//
-//        for(int i = 0; i < 10; i++){
-//            powerPlant.check(i / 100.0);
-//            Thread.sleep(1500);
-//        }
+        System.out.println("H5:");
+        Log log = new NormalLog(); //new MaintenanceLog();
+        PowerPlant powerPlant = new PowerPlant(log, new Random(42), 10);
+
+        for(int i = 0; i < 10; i++){
+            powerPlant.check(i / 100.0);
+            Thread.sleep(1500);
+        }
     }
 
 

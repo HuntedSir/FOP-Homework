@@ -67,7 +67,7 @@ public abstract class Log {
         return new MapExpression() {
             @Override
             public String map(String string) {
-                return ANSI_ESCAPE + ansiColor + ANSI_RESET;
+                return ANSI_ESCAPE + ansiColor + string + ANSI_ESCAPE + ANSI_RESET;
             }
         };
     }
