@@ -29,14 +29,13 @@ public class MaintenanceLog extends Log {
         ValueNode backslashN = new ValueNode();
         backslashN.setValueExpression( () -> "\n" );
 
-
-        ConditionNode importance = new ConditionNode(level, message, emptyMessage);
-        importance.setConditionExpression(String -> (Objects.equals(String, "3")));
-
-        ConcatenationNode concatenationNode1 = new ConcatenationNode(separator, importance);
+        ConcatenationNode concatenationNode1 = new ConcatenationNode(separator, message);
         ConcatenationNode concatenationNode2 = new ConcatenationNode(timeStamp, concatenationNode1);
         ConcatenationNode concatenationNode3 = new ConcatenationNode(concatenationNode2, backslashN);
 
-        return concatenationNode3;
+        ConditionNode importance = new ConditionNode(level, concatenationNode3, emptyMessage);
+        importance.setConditionExpression(String -> (Objects.equals(String, "3")));
+
+        return importance;
     }
 }

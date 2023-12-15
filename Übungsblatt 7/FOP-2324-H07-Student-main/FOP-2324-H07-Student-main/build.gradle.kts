@@ -14,9 +14,9 @@ jagr {
             // ACHTUNG!
             // Setzen Sie im folgenden Bereich Ihre TU-ID (NICHT Ihre Matrikelnummer!), Ihren Nachnamen und Ihren Vornamen
             // in Anführungszeichen (z.B. "ab12cdef" für Ihre TU-ID) ein!
-            // studentId.set("")
-            // firstName.set("")
-            // lastName.set("")
+             studentId.set("ab60myce")
+             firstName.set("Alexander")
+             lastName.set("Borodin")
         }
     }
 }

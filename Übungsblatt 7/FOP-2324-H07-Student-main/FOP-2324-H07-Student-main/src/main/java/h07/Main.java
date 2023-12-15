@@ -84,7 +84,7 @@ public class Main {
      */
     private static void test_h4() throws InterruptedException {
         System.out.println("H4:");
-        Log log = new NormalLog(); //new MaintenanceLog();
+        Log log = new MaintenanceLog(); //new MaintenanceLog();
         log.log(1, "Hallo FoPler!");
         log.log(6, "Error: Code 6 received!");
         log.log(3, "Warnung: Diese Uebung ist hiermit beendet\nOver and out!");
@@ -108,7 +108,7 @@ public class Main {
      */
     private static void test_h5() throws InterruptedException {
         System.out.println("H5:");
-        Log log = new NormalLog(); //new MaintenanceLog();
+        Log log = new MaintenanceLog(); //new MaintenanceLog();
         PowerPlant powerPlant = new PowerPlant(log, new Random(42), 10);
 
         for(int i = 0; i < 10; i++){
