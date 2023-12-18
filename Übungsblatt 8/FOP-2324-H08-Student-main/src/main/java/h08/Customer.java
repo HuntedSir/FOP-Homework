@@ -32,7 +32,10 @@ public record Customer(
      * @param dateOfBirth the date of birth of the customer
      */
     public Customer {
-        crash(); // TODO: H1 - remove if implemented
+        assert this.firstName() != null;
+        assert this.lastName() != null;
+        assert this.address() != null;
+        assert this.dateOfBirth() != null;
     }
 
 }

@@ -1,5 +1,6 @@
 package h08;
 
+import javax.swing.plaf.IconUIResource;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -167,7 +168,12 @@ public class Bank {
      * @return {@code true} if the specified IBAN is already used by an account of the bank
      */
     protected boolean isIbanAlreadyUsed(long iban) {
-        return crash(); // TODO: H2.1 - remove if implemented
+        for (int i = 0; i < this.accounts.length; i++) {
+            if(this.accounts[i].getIban() == iban){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -177,7 +183,15 @@ public class Bank {
      * @return the generated IBAN
      */
     protected long generateIban(Customer customer, long seed) {
-        return crash(); // TODO: H2.2 - remove if implemented
+        long iban = Math.abs(customer.hashCode() * seed);
+        while(true){
+            if(!isIbanAlreadyUsed(iban)){
+                return iban;
+            }
+            else {
+                iban = Math.abs(customer.hashCode() * seed);
+            }
+        }
     }
 
     /**
@@ -186,7 +200,16 @@ public class Bank {
      * @throws IllegalStateException if the bank is full
      */
     public void add(Customer customer) {
-        crash(); // TODO: H2.2 - remove if implemented
+        for (int i = 0; i < this.accounts.length; i++) {
+            if(this.accounts[i] == null){
+                long iban = generateIban(customer, java.lang.System.nanoTime());
+                Account account = new Account(customer, iban, 0, this, new TransactionHistory());
+                this.accounts[i] = account;
+                this.size++;
+                return;
+            }
+        }
+        throw new IllegalStateException("Bank is full");
     }
 
     /**
@@ -230,7 +253,30 @@ public class Bank {
      * @throws NoSuchElementException if the account with the specified IBAN does not exist
      */
     public Account remove(long iban) {
-        return crash(); // TODO: H2.3 - remove if implemented
+
+        assert iban > 0;
+        Account oldAccount = null;
+
+        for (int i = 0; i < this.accounts.length; i++) {
+            if (this.accounts[i].getIban() == iban){
+                oldAccount = this.accounts[i];
+                for (int j = i; j < this.accounts.length; j++) {
+                    if((j+1)<this.accounts.length) {
+                        this.accounts[j] = this.accounts[j + 1];
+                    }
+                    else{
+                        this.accounts[j+1]=null;
+                    }
+                }
+            }
+        }
+
+        if(oldAccount != null){
+            return oldAccount;
+        }
+        else {
+            throw new NoSuchElementException(String.valueOf(iban));
+        }
     }
 
     /**
@@ -285,7 +331,16 @@ public class Bank {
      * @throws NoSuchElementException   if the account with the specified IBAN does not exist
      */
     public void deposit(long iban, double amount) {
-        crash(); // TODO: H2.4 - remove if implemented
+        if(amount <= 0){
+            throw new IllegalArgumentException();
+        }
+        for (int i = 0; i < this.accounts.length; i++) {
+            if(this.accounts[i].getIban() == iban){
+                this.accounts[i].setBalance(this.accounts[i].getBalance()+amount);
+                return;
+            }
+        }
+        throw new NoSuchElementException(String.valueOf(iban));
     }
 
     /**
@@ -297,7 +352,21 @@ public class Bank {
      * @throws NoSuchElementException   if the account with the specified IBAN does not exist
      */
     public void withdraw(long iban, double amount) {
-        crash(); // TODO: H2.4 - remove if implemented
+        if(amount <= 0){
+            throw new IllegalArgumentException();
+        }
+        for (int i = 0; i < this.accounts.length; i++) {
+            if(this.accounts[i].getIban() == iban){
+                if((this.accounts[i].getBalance()-amount)>=0) {
+                    this.accounts[i].setBalance(this.accounts[i].getBalance() + amount);
+                    return;
+                }
+                else {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
+        throw new NoSuchElementException(String.valueOf(iban));
     }
 
     /**
