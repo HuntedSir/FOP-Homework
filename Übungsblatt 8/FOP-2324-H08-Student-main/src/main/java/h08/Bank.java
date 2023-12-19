@@ -203,7 +203,7 @@ public class Bank {
         for (int i = 0; i < this.accounts.length; i++) {
             if(this.accounts[i] == null){
                 long iban = generateIban(customer, java.lang.System.nanoTime());
-                Account account = new Account(customer, iban, 0, this, new TransactionHistory());
+                Account account = new Account(customer, iban, 0, this, new TransactionHistory(this.transactionHistoryCapacity));
                 this.accounts[i] = account;
                 this.size++;
                 return;
@@ -254,7 +254,7 @@ public class Bank {
      */
     public Account remove(long iban) {
 
-        assert iban > 0;
+        assert iban >= 0;
         Account oldAccount = null;
 
         for (int i = 0; i < this.accounts.length; i++) {
@@ -272,6 +272,7 @@ public class Bank {
         }
 
         if(oldAccount != null){
+            size--;
             return oldAccount;
         }
         else {

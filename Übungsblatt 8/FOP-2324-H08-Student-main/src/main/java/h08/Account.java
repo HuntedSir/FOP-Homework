@@ -1,5 +1,7 @@
 package h08;
 
+import java.time.LocalDate;
+
 import static org.tudalgo.algoutils.student.Student.crash;
 
 /**
@@ -47,7 +49,14 @@ public class Account {
      * @param history  the transaction history of this account
      */
     public Account(Customer customer, long iban, double balance, Bank bank, TransactionHistory history) {
-        crash(); // TODO: H4.1 - remove if implemented
+        assert bank != null;
+        assert history != null;
+        assert customer != null;
+        assert iban >= 0;
+
+        if(customer.dateOfBirth().compareTo(LocalDate.now())<18){
+            throw new BadTimestampException(customer.dateOfBirth());
+        }
         this.customer = customer;
         this.iban = iban;
         this.balance = balance;

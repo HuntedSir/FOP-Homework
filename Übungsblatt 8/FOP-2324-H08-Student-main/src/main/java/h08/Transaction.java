@@ -38,7 +38,16 @@ public record Transaction(
      * @throws BadTimestampException if the date is in the future
      */
     public Transaction {
-        crash(); // TODO: H4.2 - remove if implemented
+        assert date != null;
+        assert sourceAccount != null;
+        assert targetAccount != null;
+        assert description != null;
+        assert status != null;
+
+        if(date.compareTo(LocalDate.now())<0){
+            throw new BadTimestampException(date);
+        }
+
     }
 
 }
