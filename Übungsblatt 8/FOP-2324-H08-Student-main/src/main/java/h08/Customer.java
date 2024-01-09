@@ -32,10 +32,10 @@ public record Customer(
      * @param dateOfBirth the date of birth of the customer
      */
     public Customer {
-        assert this.firstName() != null;
-        assert this.lastName() != null;
-        assert this.address() != null;
-        assert this.dateOfBirth() != null;
+        assert firstName != null;
+        assert lastName != null;
+        assert address != null;
+        assert dateOfBirth != null;
     }
 
 }

@@ -47,7 +47,7 @@ public record Transaction(
         if(date.compareTo(LocalDate.now())<0){
             throw new BadTimestampException(date);
         }
-
+        
     }
 
 }

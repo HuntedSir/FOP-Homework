@@ -1,6 +1,7 @@
 package h08;
 
 import javax.swing.plaf.IconUIResource;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -168,7 +169,7 @@ public class Bank {
      * @return {@code true} if the specified IBAN is already used by an account of the bank
      */
     protected boolean isIbanAlreadyUsed(long iban) {
-        for (int i = 0; i < this.accounts.length; i++) {
+        for (int i = 0; i < size; i++) {
             if(this.accounts[i].getIban() == iban){
                 return true;
             }
@@ -335,9 +336,9 @@ public class Bank {
         if(amount <= 0){
             throw new IllegalArgumentException();
         }
-        for (int i = 0; i < this.accounts.length; i++) {
+        for (int i = 0; i < size; i++) {
             if(this.accounts[i].getIban() == iban){
-                this.accounts[i].setBalance(this.accounts[i].getBalance()+amount);
+                this.accounts[i].setBalance(this.accounts[i].getBalance() + amount);
                 return;
             }
         }
@@ -356,10 +357,10 @@ public class Bank {
         if(amount <= 0){
             throw new IllegalArgumentException();
         }
-        for (int i = 0; i < this.accounts.length; i++) {
+        for (int i = 0; i < size; i++) {
             if(this.accounts[i].getIban() == iban){
                 if((this.accounts[i].getBalance()-amount)>=0) {
-                    this.accounts[i].setBalance(this.accounts[i].getBalance() + amount);
+                    this.accounts[i].setBalance(this.accounts[i].getBalance() - amount);
                     return;
                 }
                 else {
@@ -389,8 +390,75 @@ public class Bank {
      * @param description  the description of the transaction
      * @return the status of the transaction
      */
-    public Status transfer(long senderIBAN, long receiverIBAN, int receiverBIC, double amount, String description) {
-        return crash(); // TODO: H5.3 - remove if implemented
+    public Status transfer(long senderIBAN, long receiverIBAN, int receiverBIC, double amount, String description) throws TransactionException {
+        //5.3
+        Account receiver = null;
+        Account sender = null;
+
+
+        for (int i = 0; i < size; i++) {
+            if(this.accounts[i].getIban()==senderIBAN){
+                sender = this.accounts[i];
+            }
+        }
+        if(receiverBIC != this.getBic()) {
+            for (int i = 0; i < transferableBanks.length; i++) {
+                if (transferableBanks[i].getBic() == receiverBIC) {
+                    for (int j = 0; j < transferableBanks[i].size; j++) {
+                        if (transferableBanks[i].getAccounts()[j].getIban() == receiverIBAN) {
+                            receiver = transferableBanks[i].getAccounts()[j];
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < size; i++) {
+                if(this.accounts[i].getIban()==receiverIBAN){
+                    receiver = this.accounts[i];
+                }
+            }
+        }
+
+        if(sender == null || receiver==null){
+            return Status.CANCELLED;
+        }
+
+        long transactionNumber = generateTransactionNumber();
+
+        LocalDate currentTime = LocalDate.now();
+
+        Transaction transaction = new Transaction(sender, receiver, amount, transactionNumber, description, currentTime, Status.OPEN);
+
+        sender.getHistory().add(transaction);
+        receiver.getHistory().add(transaction);
+
+
+        try {
+            this.withdraw(senderIBAN, amount);
+            if(receiverBIC==this.getBic()) {
+                this.deposit(receiverIBAN, amount);
+            }
+            else{
+                for (int i = 0; i < transferableBanks.length; i++) {
+                    if (transferableBanks[i].getBic() == receiverBIC) {
+                        transferableBanks[i].deposit(receiverIBAN, amount);
+                    }
+                }
+            }
+            transaction = new Transaction(sender, receiver, amount, transactionNumber, description, currentTime, Status.CLOSED);
+            sender.getHistory().update(transaction);
+            receiver.getHistory().update(transaction);
+        }
+        catch(Exception e) {
+            transaction = new Transaction(sender, receiver, amount, transactionNumber, description, currentTime, Status.CANCELLED);
+            sender.getHistory().update(transaction);
+            receiver.getHistory().update(transaction);
+            return Status.CANCELLED;
+        }
+
+
+        return transaction.status();
     }
 
     /**
@@ -399,8 +467,58 @@ public class Bank {
      *
      * @return the open transactions
      */
-    public Transaction[] checkOpenTransactions() {
-        return crash(); // TODO: H5.4 - remove if implemented
+    public Transaction[] checkOpenTransactions() throws TransactionException {
+        //5.4
+        int numberOfOpenTransactions = 0;
+        int numberOfTransactionsToBeCanceled = 0;
+        for (int i = 0; i < this.accounts.length; i++) {
+            for (int j = 0; j < this.accounts[i].getHistory().getTransactions().length; j++) {
+                if(this.accounts[i].getHistory().getTransactions()[j].status()==Status.OPEN){
+                    numberOfOpenTransactions++;
+                    if(accounts[i].getHistory().getTransactions()[j].date().compareTo(LocalDate.now())>28){
+                        numberOfTransactionsToBeCanceled++;
+                    }
+                }
+            }
+        }
+
+        Transaction[] canceledTransactions = new Transaction[numberOfTransactionsToBeCanceled];
+        Transaction[] transactions = new Transaction[numberOfOpenTransactions];
+        int index = 0;
+        int index2 = 0;
+        for (int i = 0; i < this.accounts.length; i++) {
+            Transaction[] accountTransactions = this.accounts[i].getHistory().getTransactions();
+            for (int j = 0; j < accountTransactions.length; j++) {
+                if(accountTransactions[j].status()==Status.OPEN){
+                    transactions[index]= accountTransactions[j];
+                    index++;
+                    if(accountTransactions[j].date().compareTo(LocalDate.now())>14){
+                        Transaction transaction = new Transaction(accountTransactions[j].sourceAccount(), accountTransactions[j].targetAccount(),
+                            accountTransactions[j].amount(), accountTransactions[j].transactionNumber(), accountTransactions[j].description(),
+                            accountTransactions[j].date(), Status.CANCELLED);
+                        this.accounts[i].getHistory().update(transaction);
+
+                        this.transfer(accountTransactions[j].sourceAccount().getIban(),
+                            accountTransactions[j].targetAccount().getIban(), this.accounts[i].getBank().bic,
+                            accountTransactions[j].amount(), accountTransactions[j].description());
+                    }
+                    if(accountTransactions[j].date().compareTo(LocalDate.now())>28){
+                        Transaction transaction = new Transaction(accountTransactions[j].sourceAccount(), accountTransactions[j].targetAccount(),
+                            accountTransactions[j].amount(), accountTransactions[j].transactionNumber(), accountTransactions[j].description(),
+                            accountTransactions[j].date(), Status.CANCELLED);
+                        this.accounts[i].getHistory().update(transaction);
+                        canceledTransactions[index2] = accountTransactions[j];
+                        index2++;
+                    }
+                }
+            }
+        }
+
+        if(numberOfTransactionsToBeCanceled>0){
+            throw new TransactionException(canceledTransactions);
+        }
+
+        return transactions;
     }
 
     @Override

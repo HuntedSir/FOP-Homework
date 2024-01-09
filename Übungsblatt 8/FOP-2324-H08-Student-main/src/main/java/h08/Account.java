@@ -1,6 +1,7 @@
 package h08;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 import static org.tudalgo.algoutils.student.Student.crash;
 
@@ -54,7 +55,8 @@ public class Account {
         assert customer != null;
         assert iban >= 0;
 
-        if(customer.dateOfBirth().compareTo(LocalDate.now())<18){
+        Period period = Period.between(customer.dateOfBirth(), LocalDate.now());
+        if(period.getYears()<18){
             throw new BadTimestampException(customer.dateOfBirth());
         }
         this.customer = customer;

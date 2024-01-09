@@ -71,7 +71,37 @@ public class TransactionHistory {
      * @throws IllegalArgumentException if the transaction number already exists in this history.
      */
     public void add(Transaction transaction) {
-        crash(); // TODO: H5.1 - remove if implemented
+        //5.1
+        for (int i = 0; i < size; i++) {
+            if(this.transactions[i].transactionNumber()==transaction.transactionNumber()){
+                throw new IllegalArgumentException("This transaction already exists!");
+            }
+        }
+
+
+        if(this.transactions[this.transactions.length-1]!=null) {
+
+            int indexOfOldestTransaction = -1;
+            Transaction oldestTransaction = null;
+
+            for (int i = 0; i < this.transactions.length; i++) {
+                if (oldestTransaction == null) {
+                    oldestTransaction = this.transactions[i];
+                    indexOfOldestTransaction = i;
+                }
+                if (oldestTransaction.date().compareTo(this.transactions[i].date()) < 0) {
+                    oldestTransaction = this.transactions[i];
+                    indexOfOldestTransaction = i;
+                }
+            }
+            this.transactions[indexOfOldestTransaction]=transaction;
+        }
+        else{
+            this.transactions[nextIndex]=transaction;
+            size++;
+            nextIndex++;
+        }
+
     }
 
     /**
@@ -80,8 +110,14 @@ public class TransactionHistory {
      * @param transaction the transaction to update
      * @throws TransactionException if the transaction does not exist in this history.
      */
-    public void update(Transaction transaction) {
-        crash(); // TODO: H5.2 - remove if implemented
+    public void update(Transaction transaction) throws TransactionException {
+        for (int i = 0; i < this.transactions.length; i++) {
+            if(transaction.transactionNumber() == this.transactions[i].transactionNumber()){
+                this.transactions[i]=transaction;
+                return;
+            }
+        }
+        throw new TransactionException("Transaction does not exist!", transaction.transactionNumber());
     }
 
     /**
