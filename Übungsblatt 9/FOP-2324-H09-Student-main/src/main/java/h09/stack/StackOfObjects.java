@@ -8,20 +8,20 @@ import java.util.stream.IntStream;
  * An object of class {@link StackOfObjects} represents a data structure of type stack.
  */
 @SuppressWarnings("unchecked")
-public class StackOfObjects {
+public class StackOfObjects <T>{
 
     private int lastIndex = -1;
 
-    private Object[] objects = new Object[1];
+    private T[] objects;
 
     /**
      * Pushes the given object on this stack.
      *
      * @param object the object
      */
-    public void push(Object object) {
+    public void push(T object) {
         increaseIfFull();
-        objects[++lastIndex] = object;
+        objects[++lastIndex] = (T)object;
     }
 
     /**
@@ -29,7 +29,7 @@ public class StackOfObjects {
      *
      * @return the top object
      */
-    public Object pop() {
+    public T pop() {
         checkIfEmpty();
         var e = get(lastIndex);
         lastIndex--;
@@ -42,7 +42,7 @@ public class StackOfObjects {
      * @param index the index
      * @return the object
      */
-    public Object get(int index) {
+    public T get(int index) {
         checkIfValid(index);
         return objects[index];
     }
@@ -54,10 +54,10 @@ public class StackOfObjects {
      * @param objects the objects
      * @return the stack
      */
-    public static StackOfObjects of(Object... objects) {
-        StackOfObjects stack = new StackOfObjects();
+    public static <X> StackOfObjects<X> of(X[] objects) {
+        StackOfObjects<X> stack = new StackOfObjects<X>();
         for (Object object : objects) {
-            stack.push(object);
+            stack.push((X)object);
         }
         return stack;
     }
