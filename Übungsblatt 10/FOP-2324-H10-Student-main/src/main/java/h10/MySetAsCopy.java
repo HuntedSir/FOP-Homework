@@ -32,7 +32,18 @@ public class MySetAsCopy<T> extends MySet<T> {
     @Override
     @StudentImplementationRequired
     public MySet<T> subset(Predicate<? super T> pred) {
-        return crash(); // TODO: H1.1 - remove if implemented
+        //H1.1
+        MySetAsCopy<T> setCopy = new MySetAsCopy<>(null, this.cmp);
+
+        ListItem<T> currentItemInCopy = null;
+        ListItem<T> lastValidItem = null;
+
+        while(true){
+            if(currentItemInCopy.next != null){
+                if(pred.test(currentItemInCopy.next.key))
+            }
+        }
+        return setCopy;
     }
 
     @Override
