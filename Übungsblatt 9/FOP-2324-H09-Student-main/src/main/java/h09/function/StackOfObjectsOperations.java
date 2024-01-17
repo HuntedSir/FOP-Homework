@@ -17,15 +17,15 @@ public class StackOfObjectsOperations {
      * @param filter the filter
      * @return the output stack
      */
-    public static StackOfObjects filter(
-        StackOfObjects in,
-        Predicate filter
+    public static <X, Y> StackOfObjects<Y> filter(
+        StackOfObjects<X> in,
+        Predicate<X> filter
     ) {
-        StackOfObjects out = new StackOfObjects();
+        StackOfObjects<Y> out = new StackOfObjects<>();
         while (in.numberOfObjects() > 0) {
-            Object element = in.pop();
+            X element = in.pop();
             if (filter.test(element)) {
-                out.push(element);
+                out.push((Y)element);
             }
         }
         return out;
@@ -38,14 +38,14 @@ public class StackOfObjectsOperations {
      * @param function the function
      * @return the output stack
      */
-    public static StackOfObjects map(
-        StackOfObjects in,
-        Function function
+    public static <X, Y> StackOfObjects<Y> map(
+        StackOfObjects<X> in,
+        Function<X, Y> function
     ) {
-        StackOfObjects out = new StackOfObjects();
+        StackOfObjects<Y> out = new StackOfObjects<>();
         while (in.numberOfObjects() > 0) {
-            Object from = in.pop();
-            Object to = function.apply(from);
+            X from = in.pop();
+            Y to = function.apply(from);
             out.push(to);
         }
         return out;

@@ -1,6 +1,7 @@
 package h09.stack;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -20,8 +21,12 @@ public class StackOfObjects <T>{
      * @param object the object
      */
     public void push(T object) {
+        if(objects ==null){
+            Object[] a = new Object[1];
+            this.objects = (T[])a;
+        }
         increaseIfFull();
-        objects[++lastIndex] = (T)object;
+        objects[++lastIndex] = object;
     }
 
     /**
@@ -44,7 +49,7 @@ public class StackOfObjects <T>{
      */
     public T get(int index) {
         checkIfValid(index);
-        return objects[index];
+        return (T) objects[index];
     }
 
     /**
@@ -54,9 +59,9 @@ public class StackOfObjects <T>{
      * @param objects the objects
      * @return the stack
      */
-    public static <X> StackOfObjects<X> of(X[] objects) {
+    public static <X> StackOfObjects<X> of(X... objects) {
         StackOfObjects<X> stack = new StackOfObjects<X>();
-        for (Object object : objects) {
+        for (X object : objects) {
             stack.push((X)object);
         }
         return stack;

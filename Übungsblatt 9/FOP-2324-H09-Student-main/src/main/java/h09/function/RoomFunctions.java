@@ -1,5 +1,9 @@
 package h09.function;
 
+import h09.WithSeats;
+import h09.room.Room;
+
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -14,7 +18,7 @@ public class RoomFunctions {
     /**
      * A predicate that returns {@code true} iff the given object is {@code null}.
      */
-    public static Predicate IS_NULL_PREDICATE = object -> object == null;
+    public static Predicate<Object> IS_NULL_PREDICATE = object -> object == null;
 
     /**
      * Returns a predicate that returns {@code true} iff the name of the given room starts with the given location prefix.
@@ -22,9 +26,11 @@ public class RoomFunctions {
      * @param locationPrefix the location prefix
      * @return the predicate
      */
-    public static Predicate isInArea(char locationPrefix) {
-        return crash();
-//        return room -> room.name().charAt(0) == locationPrefix;
+    public static <X> Predicate<X> isInArea(char locationPrefix) {
+        return room -> {
+            Room a = (Room) room;
+            return a.name().charAt(0) == locationPrefix;
+        };
     }
 
     /**
@@ -35,11 +41,13 @@ public class RoomFunctions {
      * @param numberOfSeats  the number of seats
      * @return the predicate
      */
-    public static Predicate isInAreaAndHasMinimumNumberOfSeats(char locationPrefix, int numberOfSeats) {
-        return crash();
-//        Predicate isInArea = isInArea(locationPrefix);
-//        Predicate hasMinimumNumberOfSeats = room -> room.numberOfSeats() >= numberOfSeats;
-//        return isInArea.and(hasMinimumNumberOfSeats);
+    public static <X> Predicate<X> isInAreaAndHasMinimumNumberOfSeats(char locationPrefix, int numberOfSeats) {
+        Predicate<X> isInArea = isInArea(locationPrefix);
+        Predicate<X> hasMinimumNumberOfSeats = room -> {
+            WithSeats a = (WithSeats) room;
+            return a.numberOfSeats() >= numberOfSeats;
+        };
+        return isInArea.and(hasMinimumNumberOfSeats);
     }
 
     /**
@@ -50,8 +58,11 @@ public class RoomFunctions {
      * @return the function
      */
     @SuppressWarnings("unchecked")
-    public static Function toRoomTypeOrNull(Class type) {
-        return room -> type.isInstance(room) ? room : null;
+    public static <X> Function<Room, X> toRoomTypeOrNull(Class<X> type) {
+        return room -> {
+            X a = (X) room;
+            return type.isInstance(room) ? a : null;
+        };
     }
 
     private RoomFunctions() {
