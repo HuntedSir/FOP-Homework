@@ -32,19 +32,210 @@ public class MySetInPlace<T> extends MySet<T> {
     @Override
     @StudentImplementationRequired
     public MySet<T> subset(Predicate<? super T> pred) {
-        return crash(); // TODO: H1.2 - remove if implemented
+        //H1.2
+        ListItem<T> lastValidItem = null;
+        ListItem<T> current = null;
+        if(this.head != null){
+            current = this.head;
+        }
+
+        if(!pred.test(this.head.key)){
+            this.head=null;
+        }
+        else{
+            lastValidItem=this.head;
+        }
+
+        while(current != null){
+            if(pred.test(current.key)){
+                if(this.head == null){
+                    this.head = current;
+                    lastValidItem = this.head;
+                }
+                else{
+                    lastValidItem.next = current;
+                    lastValidItem = lastValidItem.next;
+                }
+            }
+            current = current.next;
+        }
+        lastValidItem.next = null;
+
+        return this;
     }
 
     @Override
     @StudentImplementationRequired
     public MySet<ListItem<T>> cartesianProduct(MySet<T> other) {
-        return crash(); // TODO: H2.2 - remove if implemented
+        //H2.2
+
+        Comparator<ListItem<T>> listItemComparator = new Comparator<ListItem<T>>() {
+            @Override
+            public int compare(ListItem<T> o1, ListItem<T> o2) {
+                int result = cmp.compare(o1.key, o2.key);
+
+                if(result <= 0){
+                    if(result == 0){
+                        int newResult = cmp.compare(o1.next.key, o2.next.key);
+                        if(newResult < 0){
+                            return -1;
+                        }
+                        if(newResult>0){
+                            return 1;
+                        }
+                        return 0;
+                    }
+                    return -1;
+                }
+                else {
+                    return 1;
+                }
+            }
+        };
+
+        MySetAsCopy<ListItem<T>> setCopy = new MySetAsCopy<>(null, listItemComparator);
+
+        ListItem<T> thisPointer = null;
+        ListItem<T> otherPointer = null;
+
+        ListItem<ListItem<T>> lastItem = null;
+
+        if(this.head != null) {
+            thisPointer = this.head;
+        }
+
+        while(thisPointer != null)
+        {
+            if(other.head != null) {
+                otherPointer = other.head;
+            }
+
+            while(otherPointer != null){
+                ListItem<ListItem<T>> listItem = new ListItem<>();
+                listItem.key=new ListItem<>(thisPointer.key);
+                listItem.key.next = new ListItem<>(otherPointer.key);
+
+                if(setCopy.head == null){
+                    setCopy.head = listItem;
+                    lastItem = setCopy.head;
+                }
+                else{
+                    lastItem.next = listItem;
+                    lastItem = lastItem.next;
+                }
+
+                otherPointer = otherPointer.next;
+            }
+
+            thisPointer = thisPointer.next;
+        }
+
+        ListItem<T> oldLastItem = null;
+        ListItem<T> pointerM = null;
+        ListItem<T> pointerN = null;
+
+        if(this.head != null) {
+            pointerM = this.head;
+        }
+        if(other.head != null){
+            pointerN = other.head;
+        }
+
+        while(pointerM != null){
+            if(oldLastItem == null){
+                oldLastItem = this.head;
+            }
+            else {
+                pointerM = pointerM.next;
+                oldLastItem.next = null;
+                oldLastItem = pointerM;
+            }
+        }
+
+        oldLastItem = null;
+
+        while(pointerN != null){
+            if(oldLastItem == null){
+                oldLastItem = this.head;
+            }
+            else {
+                pointerN = pointerN.next;
+                oldLastItem.next = null;
+                oldLastItem = pointerN;
+            }
+        }
+
+        return setCopy;
     }
 
     @Override
     @StudentImplementationRequired
     public MySet<T> difference(MySet<T> other) {
-        return crash(); // TODO: H3.2 - remove if implemented
+        //H3.2
+
+        ListItem<T> thisPointer = null;
+        ListItem<T> otherPointer = null;
+        ListItem<T> resultPointer = null;
+        
+        boolean matchFound = false;
+
+        if(other.head != null){
+            otherPointer = other.head;
+        }
+        if(this.head != null){
+            thisPointer = this.head;
+
+            while(otherPointer!= null){
+                if(this.cmp.compare(thisPointer.key, otherPointer.key)==0){
+                    matchFound=true;
+                    break;
+                }
+                otherPointer=otherPointer.next;
+            }
+
+            if(!matchFound){
+                ListItem<T> itemCopy = new ListItem<>(thisPointer.key);
+
+                if(result.head==null){
+                    result.head=itemCopy;
+                    resultPointer=result.head;
+                }
+                else{
+                    resultPointer.next = itemCopy;
+                    resultPointer=resultPointer.next;
+                }
+            }
+        }
+
+
+        while(thisPointer != null){
+            while(otherPointer!= null){
+                if(this.cmp.compare(thisPointer.key, otherPointer.key)==0){
+                    matchFound=true;
+                    break;
+                }
+                otherPointer=otherPointer.next;
+            }
+
+            if(!matchFound){
+                ListItem<T> itemCopy = new ListItem<>(thisPointer.key);
+
+                if(result.head==null){
+                    result.head=itemCopy;
+                    resultPointer=result.head;
+                }
+                else{
+                    resultPointer.next = itemCopy;
+                    resultPointer=resultPointer.next;
+                }
+            }
+
+            matchFound=false;
+
+            thisPointer=thisPointer.next;
+        }
+
+        return this;
     }
 
     @Override

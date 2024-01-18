@@ -4,6 +4,7 @@ import org.tudalgo.algoutils.student.annotation.DoNotTouch;
 import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
 import static org.tudalgo.algoutils.student.Student.crash;
@@ -35,27 +36,151 @@ public class MySetAsCopy<T> extends MySet<T> {
         //H1.1
         MySetAsCopy<T> setCopy = new MySetAsCopy<>(null, this.cmp);
 
-        ListItem<T> currentItemInCopy = null;
         ListItem<T> lastValidItem = null;
-
-        while(true){
-            if(currentItemInCopy.next != null){
-                if(pred.test(currentItemInCopy.next.key))
-            }
+        ListItem<T> current = null;
+        if(this.head != null){
+            current = this.head;
         }
+
+        while(current != null){
+            if(pred.test(current.key)){
+                if(setCopy.head == null){
+                    setCopy.head = new ListItem<>(current.key);
+                    lastValidItem = setCopy.head;
+                }
+                else{
+                    lastValidItem.next = new ListItem<>(current.key);
+                    lastValidItem = lastValidItem.next;
+                }
+            }
+            current = current.next;
+        }
+        lastValidItem.next = null;
+
+        while(current.next!=null){
+            current = current.next;
+        }
+
+
         return setCopy;
     }
 
     @Override
     @StudentImplementationRequired
     public MySet<ListItem<T>> cartesianProduct(MySet<T> other) {
-        return crash(); // TODO: H2.1 - remove if implemented
+        //H2.1
+
+        Comparator<ListItem<T>> listItemComparator = new Comparator<ListItem<T>>() {
+            @Override
+            public int compare(ListItem<T> o1, ListItem<T> o2) {
+                int result = cmp.compare(o1.key, o2.key);
+
+                if(result <= 0){
+                    if(result == 0){
+                        int newResult = cmp.compare(o1.next.key, o2.next.key);
+                        if(newResult < 0){
+                            return -1;
+                        }
+                        if(newResult>0){
+                            return 1;
+                        }
+                        return 0;
+                    }
+                    return -1;
+                }
+                else {
+                    return 1;
+                }
+            }
+        };
+
+        MySetAsCopy<ListItem<T>> setCopy = new MySetAsCopy<>(null, listItemComparator);
+
+        ListItem<T> thisPointer = null;
+        ListItem<T> otherPointer = null;
+
+        ListItem<ListItem<T>> lastItem = null;
+
+        if(this.head != null) {
+            thisPointer = this.head;
+        }
+
+        while(thisPointer != null)
+        {
+            if(other.head != null) {
+                otherPointer = other.head;
+            }
+
+            while(otherPointer != null){
+                ListItem<ListItem<T>> listItem = new ListItem<>();
+                listItem.key=new ListItem<>(thisPointer.key);
+                listItem.key.next = new ListItem<>(otherPointer.key);
+
+                if(setCopy.head == null){
+                    setCopy.head = listItem;
+                    lastItem = setCopy.head;
+                }
+                else{
+                    lastItem.next = listItem;
+                    lastItem = lastItem.next;
+                }
+
+                otherPointer = otherPointer.next;
+            }
+
+            thisPointer = thisPointer.next;
+        }
+
+        return setCopy;
     }
 
     @Override
     @StudentImplementationRequired
     public MySet<T> difference(MySet<T> other) {
-        return crash(); // TODO: H3.1 - remove if implemented
+        //H3.1
+        MySetAsCopy<T> result = new MySetAsCopy<>(null, this.cmp);
+
+        ListItem<T> thisPointer = null;
+        ListItem<T> otherPointer = null;
+        ListItem<T> resultPointer = null;
+
+        if(this.head != null){
+            thisPointer = this.head;
+        }
+        if(other.head != null){
+            otherPointer = other.head;
+        }
+
+        boolean matchFound = false;
+
+        while(thisPointer != null){
+            while(otherPointer!= null){
+                if(this.cmp.compare(thisPointer.key, otherPointer.key)==0){
+                    matchFound=true;
+                    break;
+                }
+                otherPointer=otherPointer.next;
+            }
+
+            if(!matchFound){
+                ListItem<T> itemCopy = new ListItem<>(thisPointer.key);
+
+                if(result.head==null){
+                    result.head=itemCopy;
+                    resultPointer=result.head;
+                }
+                else{
+                    resultPointer.next = itemCopy;
+                    resultPointer=resultPointer.next;
+                }
+            }
+
+            matchFound=false;
+
+            thisPointer=thisPointer.next;
+        }
+
+        return result;
     }
 
     @Override
