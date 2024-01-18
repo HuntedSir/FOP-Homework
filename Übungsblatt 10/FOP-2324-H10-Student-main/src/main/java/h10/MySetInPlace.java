@@ -176,7 +176,7 @@ public class MySetInPlace<T> extends MySet<T> {
         ListItem<T> thisPointer = null;
         ListItem<T> otherPointer = null;
         ListItem<T> resultPointer = null;
-        
+
         boolean matchFound = false;
 
         if(other.head != null){
@@ -192,18 +192,12 @@ public class MySetInPlace<T> extends MySet<T> {
                 }
                 otherPointer=otherPointer.next;
             }
-
-            if(!matchFound){
-                ListItem<T> itemCopy = new ListItem<>(thisPointer.key);
-
-                if(result.head==null){
-                    result.head=itemCopy;
-                    resultPointer=result.head;
-                }
-                else{
-                    resultPointer.next = itemCopy;
-                    resultPointer=resultPointer.next;
-                }
+            thisPointer = thisPointer.next;
+            if(matchFound){
+                this.head = null;
+            }
+            else{
+                resultPointer = this.head;
             }
         }
 
@@ -218,15 +212,13 @@ public class MySetInPlace<T> extends MySet<T> {
             }
 
             if(!matchFound){
-                ListItem<T> itemCopy = new ListItem<>(thisPointer.key);
 
-                if(result.head==null){
-                    result.head=itemCopy;
-                    resultPointer=result.head;
+                if(this.head==null){
+                    this.head = thisPointer;
+                    resultPointer=this.head;
                 }
                 else{
-                    resultPointer.next = itemCopy;
-                    resultPointer=resultPointer.next;
+                    resultPointer.next = thisPointer;
                 }
             }
 
