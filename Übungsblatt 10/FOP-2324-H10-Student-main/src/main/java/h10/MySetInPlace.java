@@ -39,18 +39,13 @@ public class MySetInPlace<T> extends MySet<T> {
             current = this.head;
         }
 
-        if(!pred.test(this.head.key)){
-            this.head=null;
-        }
-        else{
-            lastValidItem=this.head;
-        }
-
+        boolean headChanged = false;
         while(current != null){
             if(pred.test(current.key)){
-                if(this.head == null){
+                if(!headChanged){
                     this.head = current;
                     lastValidItem = this.head;
+                    headChanged=true;
                 }
                 else{
                     lastValidItem.next = current;
@@ -59,7 +54,9 @@ public class MySetInPlace<T> extends MySet<T> {
             }
             current = current.next;
         }
-        lastValidItem.next = null;
+        if(headChanged) {
+            lastValidItem.next = null;
+        }
 
         return this;
     }
@@ -179,11 +176,14 @@ public class MySetInPlace<T> extends MySet<T> {
 
         boolean matchFound = false;
 
-        if(other.head != null){
-            otherPointer = other.head;
-        }
+
+        //check whether first element should still be in the list
         if(this.head != null){
             thisPointer = this.head;
+
+            if(other.head != null){
+                otherPointer = other.head;
+            }
 
             while(otherPointer!= null){
                 if(this.cmp.compare(thisPointer.key, otherPointer.key)==0){
@@ -203,6 +203,9 @@ public class MySetInPlace<T> extends MySet<T> {
 
 
         while(thisPointer != null){
+            if(other.head != null){
+                otherPointer = other.head;
+            }
             while(otherPointer!= null){
                 if(this.cmp.compare(thisPointer.key, otherPointer.key)==0){
                     matchFound=true;
@@ -219,6 +222,7 @@ public class MySetInPlace<T> extends MySet<T> {
                 }
                 else{
                     resultPointer.next = thisPointer;
+                    resultPointer = resultPointer.next;
                 }
             }
 
@@ -233,6 +237,122 @@ public class MySetInPlace<T> extends MySet<T> {
     @Override
     @StudentImplementationRequired
     protected MySet<T> intersectionListItems(ListItem<ListItem<T>> heads) {
-        return crash(); // TODO: H4.2 - remove if implemented
+        //H4.2
+
+        ListItem<T> thisPointer = null;
+        ListItem<T> otherPointer = null;
+        ListItem<T> resultPointer = null;
+        ListItem<ListItem<T>> headsPointer = heads;
+
+
+        int numberOfHeads = 0;
+        while(headsPointer != null){
+            numberOfHeads++;
+            headsPointer = headsPointer.next;
+        }
+
+        boolean[] matchesFound = new boolean[numberOfHeads];
+        boolean allHaveElement = true;
+        if(numberOfHeads==0){
+            allHaveElement=false;
+        }
+
+        int headsIndex;
+
+        //check whether first element should still be in the list
+        if(this.head != null){
+            thisPointer = this.head;
+
+            headsPointer=heads;
+            headsIndex = 0;
+            while(headsPointer != null) {
+                otherPointer = headsPointer.key;
+
+                while (otherPointer != null) {
+                    if (this.cmp.compare(thisPointer.key, otherPointer.key) == 0) {
+                        matchesFound[headsIndex] = true;
+                        break;
+                    }
+                    otherPointer = otherPointer.next;
+                }
+
+                headsIndex++;
+                headsPointer=headsPointer.next;
+            }
+
+            for (int i = 0; i < matchesFound.length; i++) {
+                if(matchesFound[i]==false){
+                    allHaveElement = false;
+                    break;
+                }
+            }
+
+            thisPointer=thisPointer.next;
+            if(allHaveElement){
+                    resultPointer=this.head;
+            }
+            else{
+                this.head = null;
+            }
+
+            allHaveElement=true;
+            if(numberOfHeads==0){
+                allHaveElement=false;
+            }
+
+            for (int i = 0; i < matchesFound.length; i++) {
+                matchesFound[i]=false;
+            }
+
+        }
+
+
+        while(thisPointer != null){
+
+            headsIndex = 0;
+            while(headsPointer != null) {
+                otherPointer = headsPointer.key;
+
+                while (otherPointer != null) {
+                    if (this.cmp.compare(thisPointer.key, otherPointer.key) == 0) {
+                        matchesFound[headsIndex] = true;
+                        break;
+                    }
+                    otherPointer = otherPointer.next;
+                }
+
+                headsIndex++;
+                headsPointer=headsPointer.next;
+            }
+
+            for (int i = 0; i < matchesFound.length; i++) {
+                if(matchesFound[i]==false){
+                    allHaveElement = false;
+                    break;
+                }
+            }
+
+            if(allHaveElement){
+
+                if(this.head==null){
+                    this.head=thisPointer;
+                    resultPointer=this.head;
+                }
+                else{
+                    resultPointer.next = thisPointer;
+                    resultPointer=resultPointer.next;
+                }
+            }
+
+            allHaveElement=true;
+
+            for (int i = 0; i < matchesFound.length; i++) {
+                matchesFound[i]=false;
+            }
+
+            thisPointer=thisPointer.next;
+        }
+
+        return this;
     }
 }

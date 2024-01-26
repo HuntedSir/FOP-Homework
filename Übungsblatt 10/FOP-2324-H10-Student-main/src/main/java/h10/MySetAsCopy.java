@@ -55,12 +55,7 @@ public class MySetAsCopy<T> extends MySet<T> {
             }
             current = current.next;
         }
-        lastValidItem.next = null;
-
-        while(current.next!=null){
-            current = current.next;
-        }
-
+        //lastValidItem.next = null;
 
         return setCopy;
     }
@@ -147,13 +142,14 @@ public class MySetAsCopy<T> extends MySet<T> {
         if(this.head != null){
             thisPointer = this.head;
         }
-        if(other.head != null){
-            otherPointer = other.head;
-        }
+
 
         boolean matchFound = false;
 
         while(thisPointer != null){
+            if(other.head != null){
+                otherPointer = other.head;
+            }
             while(otherPointer!= null){
                 if(this.cmp.compare(thisPointer.key, otherPointer.key)==0){
                     matchFound=true;
@@ -186,6 +182,84 @@ public class MySetAsCopy<T> extends MySet<T> {
     @Override
     @StudentImplementationRequired
     protected MySet<T> intersectionListItems(ListItem<ListItem<T>> heads) {
-        return crash(); // TODO: H4.1 - remove if implemented
+        //H4.1
+        MySetAsCopy<T> result = new MySetAsCopy<>(null, this.cmp);
+
+        ListItem<T> thisPointer = null;
+        ListItem<T> otherPointer = null;
+        ListItem<T> resultPointer = null;
+        ListItem<ListItem<T>> headsPointer = heads;
+
+
+        if(this.head != null){
+            thisPointer = this.head;
+        }
+
+        int numberOfHeads = 0;
+        while(headsPointer != null){
+            numberOfHeads++;
+            headsPointer = headsPointer.next;
+        }
+        headsPointer = heads;
+
+        boolean[] matchesFound = new boolean[numberOfHeads];
+        boolean allHaveElement = true;
+        if(numberOfHeads==0){
+            allHaveElement=false;
+        }
+
+        int headsIndex;
+
+        while(thisPointer != null){
+            headsIndex = 0;
+            headsPointer=heads;
+            while(headsPointer != null) {
+                otherPointer = headsPointer.key;
+
+                while (otherPointer != null) {
+                    if (this.cmp.compare(thisPointer.key, otherPointer.key) == 0) {
+                        matchesFound[headsIndex] = true;
+                        break;
+                    }
+                    otherPointer = otherPointer.next;
+                }
+
+                headsIndex++;
+                headsPointer=headsPointer.next;
+            }
+
+            for (int i = 0; i < matchesFound.length; i++) {
+                if(matchesFound[i]==false){
+                    allHaveElement = false;
+                    break;
+                }
+            }
+
+            if(allHaveElement){
+                ListItem<T> itemCopy = new ListItem<>(thisPointer.key);
+
+                if(result.head==null){
+                    result.head=itemCopy;
+                    resultPointer=result.head;
+                }
+                else{
+                    resultPointer.next = itemCopy;
+                    resultPointer=resultPointer.next;
+                }
+            }
+
+            allHaveElement=true;
+            if(numberOfHeads==0){
+                allHaveElement=false;
+            }
+
+            for (int i = 0; i < matchesFound.length; i++) {
+                matchesFound[i]=false;
+            }
+
+            thisPointer=thisPointer.next;
+        }
+
+        return result;
     }
 }
