@@ -6,6 +6,7 @@ import org.tudalgo.algoutils.student.annotation.StudentImplementationRequired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -25,16 +26,24 @@ public class Warehouse {
     @DoNotTouch
     private int currentCapacity = 0;
 
+
     @DoNotTouch
     public Warehouse(List<Product> products) {
         this.products = products;
     }
 
 
+    /**
+     * Gets price of a given product.
+     *
+     * @param prod the prod
+     * @return the price
+     */
     @StudentImplementationRequired
     public double getPrice(@Nullable Product prod) {
-        // TODO H2.1
-        return crash();
+        //H2.1
+        var optional = Optional.ofNullable(prod).map(product -> product.price()).orElse(0.0);
+        return optional;
     }
 
     @DoNotTouch
@@ -42,53 +51,105 @@ public class Warehouse {
         return this.products;
     }
 
+    /**
+     * Gets products that match the predicates.
+     *
+     * @param predicate the predicate
+     * @return the products
+     */
     @StudentImplementationRequired
     public List<Product> getProducts(Predicate<? super Product> predicate) {
-        // TODO H2.2
-        return crash();
+        //H2.2
+        return this.products.stream().filter(product -> predicate.test(product)).toList();
     }
 
+    /**
+     * Sets max capacity.
+     *
+     * @param maxCapacity the max capacity
+     */
     public void setMaxCapacity(int maxCapacity) {
         this.maxCapacity = maxCapacity;
     }
 
 
+    /**
+     * Gets current capacity.
+     *
+     * @return the current capacity
+     */
     @DoNotTouch
     public int getCurrentCapacity() {
         return currentCapacity;
     }
 
+    /**
+     * Gets max capacity.
+     *
+     * @return the max capacity
+     */
     @DoNotTouch
     public int getMaxCapacity() {
         return maxCapacity;
     }
 
+    /**
+     * Sets current capacity.
+     *
+     * @param currentCapacity the current capacity
+     */
     @DoNotTouch
     public void setCurrentCapacity(int currentCapacity) {
         this.currentCapacity = currentCapacity;
     }
 
+    /**
+     * Gets total quantity of product.
+     *
+     * @param product the product
+     * @return the total quantity of product
+     */
     @StudentImplementationRequired
     public long getTotalQuantityOfProduct(Product product) {
-        // TODO H2.2
-        return crash();
+        //H2.3
+        return this.products.stream().filter(product1 -> product1==product).count();
     }
 
+    /**
+     * Gets total price.
+     *
+     * @return the total price
+     */
     @StudentImplementationRequired
     public double getTotalPrice() {
-        // TODO H2.3
-        return crash();
+        //H2.4
+        return this.products.stream().map(product -> product.price()).reduce(0.0, (x, y) -> x+y);
     }
 
+    /**
+     * Add products.
+     *
+     * @param product          the product
+     * @param numberOfProducts the number of products
+     */
     @StudentImplementationRequired
     public void addProducts(Product product, int numberOfProducts) {
-        // TODO H2.5
-        crash();
+        //H2.6
+        var newProducts = generateProducts(product.type(), product.price(), product.name()).limit(numberOfProducts).toList();
+        this.products = Stream.concat(this.products.stream(), newProducts.stream()).toList();
     }
 
+    /**
+     * Generate products stream.
+     *
+     * @param typ   the typ
+     * @param price the price
+     * @param name  the name
+     * @return the stream
+     */
     @StudentImplementationRequired
     public Stream<Product> generateProducts(ProductType typ, double price, String name) {
-        // TODO H2.4
-        return crash();
+        //H2.5
+        return Stream.generate(() -> new Product(typ, price, 1, name));
     }
 }
